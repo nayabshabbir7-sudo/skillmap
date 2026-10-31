@@ -7,7 +7,7 @@ readiness with a personal dashboard and a downloadable PDF report.
 ## Features
 
 - **Accounts** - sign up / log in, salted PBKDF2 password hashing, login lockout after 5 failed attempts,
-  stay logged in after refresh, SQLite or permanent PostgreSQL storage
+  stay logged in, SQLite or permanent PostgreSQL storage
 - **Learning Resources** - curated tutorials per skill, status saved per user, filter by status
 - **Action Plan** - practical tasks with a "proof of work" link (GitHub / portfolio)
 - **Study Tracker** - log sessions, daily streak, weekly goal, 14-day chart
@@ -66,10 +66,6 @@ The app creates all tables automatically on first start. You can also set `DATAB
 as an environment variable (Docker, Render, Railway, ...).
 
 > Supabase: use the **Session pooler** connection string (the direct host is IPv6-only).
-
-**Stay logged in.** After login a random session token is stored in the database (hashed) and in a
-browser cookie for 14 days. Refreshing the page keeps you logged in. Logging out, changing the
-password or deleting the account invalidates the token.
 
 ## Deploy
 
