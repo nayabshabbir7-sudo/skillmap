@@ -1,4 +1,3 @@
-
 SKILLS_DATA = {
     "Python Intern": [
         {
@@ -66,6 +65,73 @@ SKILLS_DATA = {
         {
             "name": "Git and GitHub",
             "link": "https://docs.github.com/en/get-started"
+        }
+    ],
+
+    "Data Science Intern": [
+        {
+            "name": "Python Basics",
+            "link": "https://docs.python.org/3/tutorial/"
+        },
+        {
+            "name": "Statistics Basics",
+            "link": "https://www.khanacademy.org/math/statistics-probability"
+        },
+        {
+            "name": "Pandas",
+            "link": "https://pandas.pydata.org/docs/getting_started/"
+        },
+        {
+            "name": "Machine Learning with scikit-learn",
+            "link": "https://scikit-learn.org/stable/getting_started.html"
+        },
+        {
+            "name": "Data Visualization",
+            "link": "https://matplotlib.org/stable/tutorials/"
+        }
+    ],
+    "UI/UX Design Intern": [
+        {
+            "name": "Design Principles",
+            "link": "https://lawsofux.com/"
+        },
+        {
+            "name": "Usability Heuristics",
+            "link": "https://www.nngroup.com/articles/ten-usability-heuristics/"
+        },
+        {
+            "name": "Figma Basics",
+            "link": "https://help.figma.com/hc/en-us"
+        },
+        {
+            "name": "Accessibility Basics",
+            "link": "https://www.w3.org/WAI/fundamentals/accessibility-intro/"
+        },
+        {
+            "name": "Design Systems",
+            "link": "https://m3.material.io/"
+        }
+    ],
+    "Cybersecurity Intern": [
+        {
+            "name": "Networking Basics",
+            "link": "https://www.cloudflare.com/learning/"
+        },
+        {
+            "name": "Linux Command Line",
+            "link": "https://linuxjourney.com/"
+        },
+        {
+            "name": "Web Security (OWASP Top 10)",
+            "link": "https://owasp.org/www-project-top-ten/"
+        },
+        {
+            "name": "Hands-on Labs",
+            "link": "https://tryhackme.com/"
+        },
+        {
+            "name": "Python Basics",
+            "link": "https://docs.python.org/3/tutorial/"
         }
     ]
 }
