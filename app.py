@@ -9,7 +9,6 @@ from datetime import date, datetime
 
 import pandas as pd
 import streamlit as st
-import streamlit.components.v1 as components
 
 import database as db
 from content import ACTION_PLANS, HR_QUESTIONS, INTERVIEW_QUESTIONS
@@ -54,6 +53,7 @@ PAGES = [
     "🛠️ Action Plan",
     "⏱️ Study Tracker",
     "🎤 Interview Prep",
+    "🌍 Community Impact",
     "📥 Reports",
     "👤 Profile",
 ]
@@ -85,45 +85,47 @@ def go_to_page(page_name):
     st.session_state["navigation_page"] = page_name
 
 
-COOKIE_NAME = "skillmap_session"
+SESSION_PARAM = "s"  # name of the login token in the page URL (?s=...)
 
 
-def set_cookie(token):
-    """Save (or, with an empty token, remove) the login cookie in the browser."""
-    max_age = db.SESSION_DAYS * 86400 if token else 0
-    components.html(
-        "<script>(function(){"
-        f"var c='{COOKIE_NAME}={token}; path=/; max-age={max_age}; SameSite=Lax';"
-        "try{var p=window.parent;"
-        "if(p.location.protocol==='https:'){c+='; Secure';}"
-        "p.document.cookie=c;}catch(e){document.cookie=c;}"
-        "})();</script>",
-        height=0,
-    )
-
-
-def read_cookie():
+def read_session_token():
+    """The login token kept in the URL, so a page refresh does not log you out."""
     try:
-        return st.context.cookies.get(COOKIE_NAME)
+        value = st.query_params.get(SESSION_PARAM)
     except Exception:
         return None
+    if isinstance(value, (list, tuple)):
+        value = value[0] if value else None
+    return value or None
+
+
+def write_session_token(token):
+    """Put the token in the URL (or remove it when token is empty)."""
+    try:
+        if token:
+            if st.query_params.get(SESSION_PARAM) != token:
+                st.query_params[SESSION_PARAM] = token
+        elif SESSION_PARAM in st.query_params:
+            del st.query_params[SESSION_PARAM]
+    except Exception:
+        pass  # the app still works, you just have to log in again after a refresh
 
 
 def start_session(user):
-    """Log the user in and remember them (cookie is written on the next run)."""
+    """Log the user in and remember the session token."""
     token = db.create_session(user["id"])
     st.session_state["user"] = user
     st.session_state["auth_token"] = token
-    st.session_state["_cookie_action"] = token
+    write_session_token(token)
 
 
 def logout():
-    token = st.session_state.get("auth_token")
+    token = st.session_state.get("auth_token") or read_session_token()
     if token:
         db.delete_session(token)
     st.session_state.clear()
-    st.session_state["_cookie_action"] = ""      # remove the cookie
-    st.session_state["_cookie_checked"] = True   # do not auto-login from the old cookie
+    st.session_state["_session_checked"] = True  # do not auto-login again
+    write_session_token(None)
 
 
 def on_skill_change(role, skill_name, widget_key):
@@ -249,8 +251,7 @@ def footer():
 def render_auth():
     hide_sidebar()
 
-    if "_cookie_action" in st.session_state:
-        set_cookie(st.session_state.pop("_cookie_action"))
+    write_session_token(None)  # nobody is logged in: remove any old token from the URL
 
     st.markdown(hero_html(compact=True), unsafe_allow_html=True)
     st.write("")
@@ -319,21 +320,21 @@ def render_auth():
     footer()
 
 
-if st.session_state["user"] is None and not st.session_state.get("_cookie_checked"):
-    st.session_state["_cookie_checked"] = True
-    cookie_token = read_cookie()
-    if cookie_token:
-        cookie_user = db.get_user_by_session(cookie_token)
-        if cookie_user:
-            st.session_state["user"] = cookie_user
-            st.session_state["auth_token"] = cookie_token
+if st.session_state["user"] is None and not st.session_state.get("_session_checked"):
+    st.session_state["_session_checked"] = True
+    url_token = read_session_token()
+    if url_token:
+        url_user = db.get_user_by_session(url_token)
+        if url_user:
+            st.session_state["user"] = url_user
+            st.session_state["auth_token"] = url_token
 
 if st.session_state["user"] is None:
     render_auth()
     st.stop()
 
-if "_cookie_action" in st.session_state:
-    set_cookie(st.session_state.pop("_cookie_action"))
+# keep the token in the URL while logged in (so F5 / refresh keeps you logged in)
+write_session_token(st.session_state.get("auth_token"))
 
 # -------------------- LOGGED-IN USER --------------------
 user = db.get_user(st.session_state["user"]["id"])
@@ -388,7 +389,7 @@ for career in SKILLS_DATA:
     )
 
 # -------------------- CAREER SELECTION --------------------
-if page != "👤 Profile":
+if page not in ("👤 Profile", "🌍 Community Impact"):
     role = st.selectbox(
         "Select your career role:",
         list(SKILLS_DATA.keys()),
@@ -434,6 +435,22 @@ if page == "🏠 Home":
     m2.metric("📘 Skills", f"{stats['skills_done']}/{stats['skills_total']}")
     m3.metric("🛠️ Tasks", f"{stats['tasks_done']}/{stats['tasks_total']}")
     m4.metric("🔥 Study streak", f"{summary['streak']} day(s)")
+
+    totals = db.get_user_totals(uid)
+    first_steps = [
+        (totals.get(db.CATEGORY_SKILL, 0) > 0, "Mark your first skill as **Learned** (Learning Resources)"),
+        (totals.get(db.CATEGORY_TASK, 0) > 0, "Complete a practical task (Action Plan)"),
+        (summary["sessions"] > 0, "Log a study session (Study Tracker)"),
+        (totals.get(db.CATEGORY_INTERVIEW, 0) > 0, "Practice an interview question (Interview Prep)"),
+    ]
+
+    if not all(done for done, _label in first_steps):
+        with st.container(border=True):
+            card_marker(1)
+            st.markdown("### 🧭 Your first steps")
+            for done, label in first_steps:
+                st.write(("✅ " if done else "⬜ ") + label)
+            st.progress(sum(1 for done, _label in first_steps if done) / len(first_steps))
 
     if os.path.exists(banner_path()):
         try:
@@ -863,6 +880,58 @@ elif page == "🎤 Interview Prep":
         st.caption(f"{hr_done} of {len(HR_QUESTIONS)} practiced")
         render_questions(HR_QUESTIONS, HR_ROLE, hr_map)
 
+# ==================== COMMUNITY IMPACT ====================
+elif page == "🌍 Community Impact":
+
+    st.subheader("🌍 Community Impact")
+    st.caption("Anonymous totals from all SkillMap learners. No personal data is shown.")
+
+    community = db.get_community_stats()
+    mine = db.get_user_totals(uid)
+    my_summary = db.get_study_summary(uid)
+
+    i1, i2, i3, i4 = st.columns(4)
+    i1.metric("👥 Learners", community["learners"])
+    i2.metric("📘 Skills learned", community["skills_learned"])
+    i3.metric("🛠️ Tasks completed", community["tasks_completed"])
+    i4.metric("⏳ Study time", hours_text(community["study_minutes"]))
+
+    j1, j2, j3 = st.columns(3)
+    j1.metric("🎤 Questions practiced", community["questions_practiced"])
+    j2.metric("🗒️ Study sessions", community["study_sessions"])
+    average = community["study_minutes"] / community["learners"] if community["learners"] else 0
+    j3.metric("📈 Avg. study per learner", hours_text(average))
+
+    st.subheader("📊 Skills learned by career path")
+
+    by_role = community["skills_by_role"]
+    if by_role:
+        st.bar_chart(
+            {"Career path": list(by_role.keys()), "Skills learned": list(by_role.values())},
+            x="Career path",
+            y="Skills learned",
+            color="#22D3EE",
+        )
+    else:
+        st.info("No skills have been marked as learned yet. Be the first!")
+
+    st.divider()
+    st.subheader("🙋 Your contribution")
+
+    k1, k2, k3 = st.columns(3)
+    k1.metric("📘 Your skills learned", mine.get(db.CATEGORY_SKILL, 0))
+    k2.metric("🛠️ Your tasks completed", mine.get(db.CATEGORY_TASK, 0))
+    k3.metric("⏳ Your study time", hours_text(my_summary["total_minutes"]))
+
+    st.divider()
+    st.subheader("🎯 Why SkillMap matters")
+    st.write(
+        "Free tutorials are everywhere, but beginners often have no clear roadmap, no way to "
+        "prove their work and no idea how ready they are. SkillMap gives every learner the same "
+        "structured path: curated skills, practical tasks with proof of work, interview practice "
+        "and a readiness score. The numbers above show the combined effort of the community."
+    )
+
 # ==================== REPORTS ====================
 elif page == "📥 Reports":
 
@@ -1034,7 +1103,7 @@ elif page == "👤 Profile":
             if ok:
                 new_token = db.create_session(uid)
                 st.session_state["auth_token"] = new_token
-                set_cookie(new_token)
+                write_session_token(new_token)
                 st.success(message)
             else:
                 st.error(message)
