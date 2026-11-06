@@ -28,7 +28,7 @@ DB_PATH = os.environ.get("SKILLMAP_DB") or os.path.join(
 PBKDF2_ITERATIONS = 200_000
 MAX_FAILED_ATTEMPTS = 5
 LOCK_SECONDS = 300
-SESSION_DAYS = 14
+SESSION_DAYS = 7
 
 USERNAME_RE = re.compile(r"^[a-z0-9_.]{3,20}$")
 TOKEN_RE = re.compile(r"^[A-Za-z0-9_\-]{20,100}$")
@@ -685,6 +685,60 @@ def get_study_summary(user_id):
         "sessions": int(totals["sessions"]),
         "week_minutes": int(totals["week_minutes"]),
         "streak": streak,
+    }
+
+
+# -------------------- TOTALS (user + community) --------------------
+def get_user_totals(user_id):
+    """How many skills / tasks / interview questions this user has finished."""
+    with get_connection() as connection:
+        rows = connection.execute(
+            """
+            SELECT category, COALESCE(SUM(done), 0) AS total
+            FROM progress
+            WHERE user_id = ?
+            GROUP BY category
+            """,
+            (user_id,),
+        ).fetchall()
+    return {row["category"]: int(row["total"]) for row in rows}
+
+
+def get_community_stats():
+    """Anonymous totals for all learners (no names, no personal data)."""
+    with get_connection() as connection:
+        users = connection.execute("SELECT COUNT(*) AS c FROM users").fetchone()
+        done = connection.execute(
+            """
+            SELECT category, COALESCE(SUM(done), 0) AS total
+            FROM progress
+            GROUP BY category
+            """
+        ).fetchall()
+        study = connection.execute(
+            "SELECT COALESCE(SUM(minutes), 0) AS m, COUNT(*) AS c FROM study_logs"
+        ).fetchone()
+        by_role = connection.execute(
+            """
+            SELECT role, COALESCE(SUM(done), 0) AS total
+            FROM progress
+            WHERE category = 'skill'
+            GROUP BY role
+            ORDER BY total DESC
+            """
+        ).fetchall()
+
+    totals = {row["category"]: int(row["total"]) for row in done}
+    return {
+        "learners": int(users["c"]),
+        "skills_learned": totals.get(CATEGORY_SKILL, 0),
+        "tasks_completed": totals.get(CATEGORY_TASK, 0),
+        "questions_practiced": totals.get(CATEGORY_INTERVIEW, 0),
+        "study_minutes": int(study["m"]),
+        "study_sessions": int(study["c"]),
+        "skills_by_role": {
+            row["role"]: int(row["total"]) for row in by_role if int(row["total"]) > 0
+        },
     }
 
 
