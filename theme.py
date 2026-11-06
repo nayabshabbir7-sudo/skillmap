@@ -609,6 +609,36 @@ THEME_CSS = r"""<style>
         font-size: clamp(36px, 5.2vw, 70px);
     }
 
+    /* ---------- Mobile polish ---------- */
+    @media (max-width: 768px) {
+        .block-container {
+            padding: 1.2rem 0.9rem 3rem !important;
+        }
+
+        .hero,
+        .hero.compact {
+            padding: 32px 20px;
+            min-height: 0;
+        }
+
+        .hero-title {
+            font-size: clamp(34px, 11vw, 56px);
+        }
+
+        [data-testid="stMetric"] {
+            padding: 12px;
+        }
+
+        [data-testid="stMetricValue"] {
+            font-size: 1.5rem;
+        }
+
+        .stLinkButton > a,
+        .stButton > button {
+            width: 100%;
+        }
+    }
+
     /* ---------- Hide Streamlit default menu/footer for a cleaner look ---------- */
     #MainMenu { visibility: hidden; }
     footer { visibility: hidden; }
