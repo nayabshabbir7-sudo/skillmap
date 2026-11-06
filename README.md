@@ -7,13 +7,17 @@ readiness with a personal dashboard and a downloadable PDF report.
 ## Features
 
 - **Accounts** - sign up / log in, salted PBKDF2 password hashing, login lockout after 5 failed attempts,
-  stay logged in, SQLite or permanent PostgreSQL storage
+  stay logged in after refresh, SQLite or permanent PostgreSQL storage
+- **6 career paths** - Python, Data Analyst, Web Developer, Data Science, UI/UX Design and Cybersecurity interns,
+  each with curated skills, practical tasks and interview questions
+- **Getting-started checklist** - new users see their first four steps on the Home page
 - **Learning Resources** - curated tutorials per skill, status saved per user, filter by status
 - **Action Plan** - practical tasks with a "proof of work" link (GitHub / portfolio)
 - **Study Tracker** - log sessions, daily streak, weekly goal, 14-day chart
 - **Interview Prep** - technical + HR questions with hints and "practiced" tracking
 - **Dashboard** - weighted career readiness score (skills 50%, tasks 30%, interview 20%),
   achievements, skill-gap analyzer, overview of all career paths
+- **Community Impact** - anonymous totals for all learners (skills learned, tasks, study hours) and your own contribution
 - **Reports** - TXT, CSV and PDF downloads
 - **Profile** - edit name and goal, change password, delete account and all data
 
@@ -66,6 +70,13 @@ The app creates all tables automatically on first start. You can also set `DATAB
 as an environment variable (Docker, Render, Railway, ...).
 
 > Supabase: use the **Session pooler** connection string (the direct host is IPv6-only).
+
+**Stay logged in.** After login a random session token is stored in the database (only its hash)
+and kept in the page URL (`?s=...`) for 7 days, so refreshing the page keeps you logged in.
+Logging out, changing the password or deleting the account invalidates the token.
+
+> Security note: because the token is part of the URL, do not share the browser address bar while you are
+> logged in. Use **Log out** on shared computers.
 
 ## Deploy
 
