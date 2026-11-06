@@ -82,6 +82,87 @@ ACTION_PLANS = {
             "outcome": "Document the project and prepare it for demonstration.",
         },
     ],
+    "Data Science Intern": [
+        {
+            "title": "Statistics Practice",
+            "task": "Calculate mean, median, standard deviation and a correlation on a real dataset and explain what they mean.",
+            "outcome": "Write a short notebook with your results and explanations."
+        },
+        {
+            "title": "Data Cleaning with Pandas",
+            "task": "Clean a messy CSV file: fix data types, handle missing values and remove duplicates.",
+            "outcome": "Save the cleaned dataset and a list of the cleaning steps."
+        },
+        {
+            "title": "Exploratory Data Analysis",
+            "task": "Explore a dataset with at least 3 charts and write down 3 insights.",
+            "outcome": "Publish a notebook with the charts and insights."
+        },
+        {
+            "title": "First Machine Learning Model",
+            "task": "Split a dataset into train and test sets, train a scikit-learn model and report its accuracy.",
+            "outcome": "Document the model, the metric and what you would improve."
+        },
+        {
+            "title": "Portfolio Project",
+            "task": "Complete an end-to-end data science project from question to conclusion.",
+            "outcome": "Upload the notebook and a README to GitHub."
+        }
+    ],
+    "UI/UX Design Intern": [
+        {
+            "title": "Heuristic Review",
+            "task": "Review a popular app or website using the 10 usability heuristics and note 5 problems.",
+            "outcome": "Write a short review with screenshots."
+        },
+        {
+            "title": "Wireframe a Screen",
+            "task": "Sketch or wireframe the main screen of a simple app idea.",
+            "outcome": "Save the wireframe as an image or PDF."
+        },
+        {
+            "title": "Prototype in Figma",
+            "task": "Build a clickable prototype with at least 3 connected screens.",
+            "outcome": "Share a view-only Figma link."
+        },
+        {
+            "title": "Accessibility Check",
+            "task": "Check a design for color contrast, text size and keyboard use, and fix the issues you find.",
+            "outcome": "List the problems you found and your fixes."
+        },
+        {
+            "title": "Portfolio Case Study",
+            "task": "Write a case study with the problem, your process, the final design and what you learned.",
+            "outcome": "Publish the case study as a web page or PDF."
+        }
+    ],
+    "Cybersecurity Intern": [
+        {
+            "title": "Networking Notes",
+            "task": "Explain DNS, HTTP and TCP in your own words and try the ping and nslookup commands.",
+            "outcome": "Write short notes with your command outputs."
+        },
+        {
+            "title": "Linux Practice",
+            "task": "Practice moving between folders, reading files and changing permissions in a Linux terminal.",
+            "outcome": "Save a list of the commands you learned."
+        },
+        {
+            "title": "OWASP Review",
+            "task": "Pick 3 items from the OWASP Top 10 and explain each with an example and how to prevent it.",
+            "outcome": "Write a one-page summary."
+        },
+        {
+            "title": "Hands-on Lab",
+            "task": "Complete a beginner room or lab on a legal training platform such as TryHackMe. Practice only on systems that allow testing.",
+            "outcome": "Save a screenshot and a short write-up."
+        },
+        {
+            "title": "Security Write-up",
+            "task": "Write a short report about a security topic or lab you completed, with findings and recommendations.",
+            "outcome": "Publish the report on GitHub."
+        }
+    ],
 }
 
 
@@ -216,6 +297,117 @@ INTERVIEW_QUESTIONS = {
             "hint": "A tree representation of the page that JavaScript can read and change, for example to "
                     "update content or react to events.",
         },
+    ],
+    "Data Science Intern": [
+        {
+            "id": "ds-1",
+            "question": "What is overfitting and how can you reduce it?",
+            "hint": "The model learns noise in the training data and performs poorly on new data. Reduce it with more data, simpler models, regularization, cross-validation and early stopping."
+        },
+        {
+            "id": "ds-2",
+            "question": "Why do we split data into training, validation and test sets?",
+            "hint": "Training data fits the model, validation data is used to tune choices, and test data gives a final unbiased estimate of performance on unseen data."
+        },
+        {
+            "id": "ds-3",
+            "question": "What is the difference between precision and recall?",
+            "hint": "Precision is the share of predicted positives that are correct. Recall is the share of real positives that were found. Choose based on the cost of false positives versus false negatives."
+        },
+        {
+            "id": "ds-4",
+            "question": "Explain the bias-variance tradeoff.",
+            "hint": "High bias means the model is too simple and underfits. High variance means it is too complex and overfits. The goal is a balance that generalizes well."
+        },
+        {
+            "id": "ds-5",
+            "question": "What is cross-validation?",
+            "hint": "Splitting the data into several folds and training and testing on different folds in turn, to get a more reliable estimate of performance."
+        },
+        {
+            "id": "ds-6",
+            "question": "How would you handle an imbalanced dataset?",
+            "hint": "Use better metrics (precision, recall, F1), resampling, class weights or collect more minority-class data. Accuracy alone can be misleading."
+        },
+        {
+            "id": "ds-7",
+            "question": "Walk me through a data science project you completed.",
+            "hint": "Cover the question, the data, cleaning, features, the model and metric, the results and what you would improve."
+        }
+    ],
+    "UI/UX Design Intern": [
+        {
+            "id": "ux-1",
+            "question": "What is the difference between UX and UI design?",
+            "hint": "UX is the overall experience and how easy a product is to use. UI is the visual design of the interface: layout, color, typography and components."
+        },
+        {
+            "id": "ux-2",
+            "question": "Walk me through your design process.",
+            "hint": "Research the users, define the problem, brainstorm ideas, wireframe, prototype, test with users, then iterate."
+        },
+        {
+            "id": "ux-3",
+            "question": "What are usability heuristics? Name a few.",
+            "hint": "General rules for good interfaces, for example visibility of system status, consistency, error prevention and recognition rather than recall."
+        },
+        {
+            "id": "ux-4",
+            "question": "What is the difference between a wireframe and a prototype?",
+            "hint": "A wireframe is a simple layout of the structure. A prototype is interactive and simulates how the product works."
+        },
+        {
+            "id": "ux-5",
+            "question": "How do you make a design accessible?",
+            "hint": "Use enough color contrast, readable text, alt text for images and clear labels, and make sure it works with a keyboard and screen readers."
+        },
+        {
+            "id": "ux-6",
+            "question": "How do you test whether a design works?",
+            "hint": "Run usability tests with real users, watch where they struggle, collect feedback and improve the design."
+        },
+        {
+            "id": "ux-7",
+            "question": "How do you handle critical feedback on your design?",
+            "hint": "Listen without defending, ask questions to understand the problem, separate opinions from user data and iterate."
+        }
+    ],
+    "Cybersecurity Intern": [
+        {
+            "id": "cs-1",
+            "question": "What is the CIA triad?",
+            "hint": "Confidentiality (only authorized people can see data), Integrity (data is not changed improperly) and Availability (systems and data are accessible when needed)."
+        },
+        {
+            "id": "cs-2",
+            "question": "What is the difference between encryption and hashing?",
+            "hint": "Encryption is reversible with a key and protects data in transit or at rest. Hashing is one-way and is used to verify integrity or to store passwords."
+        },
+        {
+            "id": "cs-3",
+            "question": "What is SQL injection and how do you prevent it?",
+            "hint": "Attacker input is run as part of a database query. Prevent it with parameterized queries, input validation and least-privilege database accounts."
+        },
+        {
+            "id": "cs-4",
+            "question": "What is cross-site scripting (XSS)?",
+            "hint": "A malicious script is injected into a web page and runs in other users' browsers. Prevent it by escaping output, validating input and using a content security policy."
+        },
+        {
+            "id": "cs-5",
+            "question": "What is the difference between symmetric and asymmetric encryption?",
+            "hint": "Symmetric encryption uses one shared key and is fast. Asymmetric uses a public and private key pair and is used for key exchange and digital signatures."
+        },
+        {
+            "id": "cs-6",
+            "question": "What is the principle of least privilege?",
+            "hint": "Give users and programs only the access they need to do their job, which limits the damage if an account is compromised."
+        },
+        {
+            "id": "cs-7",
+            "question": "What would you do if you found a vulnerability in a system?",
+            "hint": "Do not exploit it. Document it, report it responsibly to the owner or the security team and follow their disclosure policy."
+        }
     ],
 }
 
